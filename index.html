@@ -71,6 +71,12 @@
             animation: shine 3s linear infinite;
         }
 
+        option {
+            background-color: #0f172a;
+            color: #e5e7eb;
+            font-weight: 600;
+        }
+
         @keyframes shine {
             to { background-position: 200% center; }
         }
@@ -186,28 +192,47 @@
                     <p id="deskripsiSingkat" class="text-[11px] text-cyan-200/70 italic leading-relaxed mb-3 hidden"></p>
 
                     <!-- Input Khusus Negara (Hanya muncul jika National Pride dipilih) -->
-                    <div id="countryInputBox" class="hidden mb-3">
+                    <div id="countryInputBox" class="hidden mb-3 relative z-40">
                         <label class="block text-xs font-bold text-yellow-400 mb-1">Nama Negara & Ornamen (Contoh: Indonesia, Garuda, Batik)</label>
-                        <input type="text" id="countryName" placeholder="Ketik negara / budaya..." class="w-full p-3 rounded-xl glass-input text-yellow-300 border-yellow-500/50 focus:border-yellow-400 font-semibold">
+                        <input type="text" id="countryName" placeholder="Ketik negara / budaya..." class="w-full p-3 rounded-xl glass-input text-yellow-300 border-yellow-500/50 focus:border-yellow-400 font-semibold" oninput="updateDynamicPrompt()">
                     </div>
 
                     <!-- Input Khusus Iron Man Varian -->
-                    <div id="ironmanOptionsBox" class="hidden mb-3">
+                    <div id="ironmanOptionsBox" class="hidden mb-3 relative z-50">
                         <label class="block text-xs font-bold text-red-400 mb-1">Varian Zirah (Khusus Nano-Tech)</label>
-                        <select id="ironmanSuit" class="w-full p-3 rounded-xl glass-input text-red-300 border-red-500/50 focus:border-red-400 font-semibold text-sm">
+                        <select id="ironmanSuit" class="w-full p-3 rounded-xl glass-input text-red-300 border-red-500/50 focus:border-red-400 focus:ring-1 focus:ring-red-400 font-semibold text-sm cursor-pointer" onchange="updateDynamicPrompt()">
                             <option value="Sleek vibrant red and silver metallic nano-tech armor with glowing red circular platform">Custom Video (Perak Merah Sleek & Platform Menyala)</option>
                             <option value="Classic Red and Gold Mark 85 style armor">Mark 85 (Klasik Merah Emas)</option>
                             <option value="Sleek Silver and Red Centurion style armor">Silver Centurion (Perak Merah Klasik)</option>
                             <option value="Heavy militaristic Gunmetal Grey and Black armor with shoulder cannons">War Machine (Gunmetal & Hitam)</option>
                             <option value="Massive, oversized, bulky Hulkbuster style heavy armor">Hulkbuster (Super Masif Bulky)</option>
                             <option value="Matte Black stealth armor with glowing blue neon accents">Stealth Suit (Hitam Matte Cahaya Biru)</option>
+                            <option value="Dark Emerald and Gold metallic nano-tech armor with intricate dragon scale textures" class="text-green-400">Dragon Buster (Hijau Zamrud & Emas Bersisik)</option>
+                            <option value="Toxic Matte Black stealth armor with glowing neon green accents and bio-luminescent lines" class="text-green-400">Toxic Stealth (Hitam Matte & Neon Hijau)</option>
                         </select>
                     </div>
 
-                    <textarea id="textArahan" rows="4" placeholder="Skrip otomatis akan muncul di sini setelah Anda memilih preset..." class="w-full p-3 rounded-xl glass-input text-gray-200 placeholder-gray-600 resize-none text-sm"></textarea>
+                    <textarea id="textArahan" rows="5" placeholder="Skrip otomatis akan muncul di sini setelah Anda memilih preset..." class="w-full p-3 rounded-xl glass-input text-gray-200 placeholder-gray-600 resize-none text-sm transition-all duration-300"></textarea>
                 </div>
+            </div>
 
-                <!-- Rasio Video -->
+            <!-- Opsi Tambahan Khusus Guardian -->
+            <div id="guardianOptions" class="hidden mb-6 bg-purple-900/20 border border-purple-500/30 p-4 rounded-xl transition-all duration-300 relative z-30">
+                <label class="flex items-center gap-3 cursor-pointer group">
+                    <div class="relative">
+                        <input type="checkbox" id="addonWings" class="peer sr-only">
+                        <div class="w-10 h-6 bg-gray-700/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-300 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-500 peer-checked:after:bg-white"></div>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-sm font-bold text-purple-300 group-hover:text-purple-200 transition-colors font-display tracking-wide">Epic Fusion: Corak Hewan & Sayap Baja</span>
+                        <span class="text-[10px] text-purple-400/70 mt-0.5">Zirah otomatis diukir corak sisik pendamping dan sayap mekanik terbuka di detik akhir.</span>
+                    </div>
+                </label>
+            </div>
+
+            <div class="space-y-5">
+                
+                <!-- GABUNGAN TEMA & GAYA -->
                 <div>
                     <label class="block text-sm font-semibold text-cyan-400 mb-2">Rasio Video</label>
                     <div class="grid grid-cols-4 gap-2">
@@ -273,7 +298,7 @@
             },
             ironman: {
                 desc: "Nano-Tech Merambat Cepat dengan platform pijakan bercahaya merah.",
-                prompt: "Cinematic 8k footage, ultra-realistic VFX. A character standing on high-tech glowing circular floor platforms emitting red light. Sleek, aerodynamic Nano-tech metallic suit rapidly spreading from the boots upwards. FOOTWEAR OVERRIDE: Original shoes MUST instantly morph into sleek armored boots. Micro-hexagonal plating constructs an absolute full lower body armor encasing thighs completely. ZERO BARE SKIN. High-tech chest arc reactor forms, motorized tight faceplate slams shut sealing the face."
+                prompt: "Cinematic 8k footage, ultra-realistic VFX. A character standing on high-tech glowing circular floor platforms emitting red light. Sleek, aerodynamic Nano-tech red and silver metallic suit rapidly spreading from the boots upwards. FOOTWEAR OVERRIDE: Original shoes MUST instantly morph into sleek armored boots. Micro-hexagonal plating constructs an absolute full lower body armor encasing thighs completely. ZERO BARE SKIN. High-tech chest arc reactor forms, motorized tight faceplate slams shut sealing the face."
             },
             national: {
                 desc: "Zirah kebanggaan negara dengan ornamen budaya, bendera, dan platform bercahaya.",
@@ -320,14 +345,12 @@
         function updatePresetData() {
             const presetKey = document.getElementById('presetKombinasi').value;
             const descEl = document.getElementById('deskripsiSingkat');
-            const textArea = document.getElementById('textArahan');
             const countryBox = document.getElementById('countryInputBox');
             const ironmanBox = document.getElementById('ironmanOptionsBox');
             
             if (presetKey && presets[presetKey]) {
                 descEl.innerText = presets[presetKey].desc;
                 descEl.classList.remove('hidden');
-                textArea.value = presets[presetKey].prompt;
 
                 if (presetKey === 'national') {
                     countryBox.classList.remove('hidden');
@@ -339,11 +362,53 @@
                     countryBox.classList.add('hidden');
                     ironmanBox.classList.add('hidden');
                 }
+                
+                updateDynamicPrompt();
             } else {
                 descEl.classList.add('hidden');
                 countryBox.classList.add('hidden');
                 ironmanBox.classList.add('hidden');
-                textArea.value = "";
+                document.getElementById('textArahan').value = "";
+            }
+        }
+
+        function updateDynamicPrompt() {
+            const presetKey = document.getElementById('presetKombinasi').value;
+            const textArea = document.getElementById('textArahan');
+            
+            if (presetKey && presets[presetKey]) {
+                let basePrompt = presets[presetKey].prompt;
+
+                if (presetKey === 'national') {
+                    const countryVal = document.getElementById('countryName').value.trim();
+                    if (countryVal) {
+                        basePrompt += `\n\n[SPECIFIC NATIONAL THEME: Perfectly themed around ${countryVal.toUpperCase()}. Use highly accurate flag colors, national emblems, and authentic cultural engravings specific to ${countryVal} applied elegantly onto the armor.]`;
+                    }
+                }
+
+                if (presetKey === 'ironman') {
+                    const suitSelect = document.getElementById('ironmanSuit');
+                    if (suitSelect) {
+                        const suitType = suitSelect.value;
+                        const suitText = suitSelect.options[suitSelect.selectedIndex].text;
+                        
+                        // Otomatis ubah aura & dasar warna jika pilih varian hijau/toxic
+                        if (suitText.includes("Hijau") || suitText.includes("Neon Hijau")) {
+                            basePrompt = basePrompt.replace("glowing circular floor platforms emitting red light", "glowing circular floor platforms emitting toxic emerald-green light");
+                            basePrompt = basePrompt.replace("red and silver metallic suit", "dark green and black metallic suit");
+                        }
+                        
+                        basePrompt += `\n\n[SPECIFIC ARMOR OVERRIDE: The armor formed MUST strictly be ${suitType}. Maintain the rapid nano-tech assembly sequence.]`;
+                    }
+                }
+
+                textArea.value = basePrompt;
+                
+                // Efek visual kedip supaya tahu teksnya udah terupdate otomatis
+                textArea.classList.add('border-cyan-400', 'bg-cyan-900/30', 'shadow-[0_0_15px_rgba(34,211,238,0.4)]');
+                setTimeout(() => {
+                    textArea.classList.remove('border-cyan-400', 'bg-cyan-900/30', 'shadow-[0_0_15px_rgba(34,211,238,0.4)]');
+                }, 500);
             }
         }
 
@@ -353,6 +418,7 @@
             const title = document.getElementById('outputTitle');
             const gridContainer = document.getElementById('uploadGridContainer');
             const boxPendamping = document.getElementById('boxPendamping');
+            const guardianOptions = document.getElementById('guardianOptions');
 
             if(mode === 'guardian') {
                 btn.style.background = "linear-gradient(90deg, #7c3aed, #a855f7)";
@@ -360,6 +426,7 @@
                 title.innerText = "Guardian Particle-Fusion Script";
                 
                 if(boxPendamping) boxPendamping.style.display = "flex";
+                if(guardianOptions) guardianOptions.classList.remove('hidden');
                 if(gridContainer) {
                     gridContainer.classList.remove('grid-cols-2');
                     gridContainer.classList.add('grid-cols-3');
@@ -370,6 +437,7 @@
                 title.innerText = "Unified Master Script";
                 
                 if(boxPendamping) boxPendamping.style.display = "none";
+                if(guardianOptions) guardianOptions.classList.add('hidden');
                 if(gridContainer) {
                     gridContainer.classList.remove('grid-cols-3');
                     gridContainer.classList.add('grid-cols-2');
@@ -479,18 +547,6 @@
                 
                 let userText = document.getElementById('textArahan').value;
                 
-                if (presetKey === 'national') {
-                    const countryVal = document.getElementById('countryName').value.trim();
-                    if (countryVal) {
-                        userText += `\n[SPECIFIC NATIONAL THEME: Perfectly themed around ${countryVal.toUpperCase()}. Use highly accurate flag colors, national emblems, and authentic cultural engravings specific to ${countryVal} applied elegantly onto the armor.]`;
-                    }
-                }
-
-                if (presetKey === 'ironman') {
-                    const suitType = document.getElementById('ironmanSuit').value;
-                    userText += `\n[SPECIFIC ARMOR OVERRIDE: The armor formed MUST strictly be ${suitType}. Maintain the rapid nano-tech assembly sequence.]`;
-                }
-
                 const ratio = document.querySelector('input[name="rasio"]:checked').value;
                 const durasiVal = document.getElementById('durasi').value;
                 const mode = document.querySelector('input[name="modeSkenario"]:checked').value;
@@ -500,6 +556,10 @@
 
                 let containerHtml = `<div class="space-y-6 pb-4">`;
                 let fullDownloadText = "";
+                
+                const addonWings = document.getElementById('addonWings') && document.getElementById('addonWings').checked;
+                let wingText = addonWings ? " Intricate organic animal-scale patterns and glowing bio-luminescent lines permanently imprint and etch onto the metallic armor plates. In the final stage as the helmet locks into place, a pair of massive, majestic mechanical steel wings with razor-sharp metallic feathers majestically unfurl and extend from the back, glowing with internal energy." : "";
+                let dissolveText = "gracefully dissolves into glowing energy particles and swirling bio-luminescent mist. The companion's body slowly transforms over several seconds, remaining visible as a fading ethereal energy silhouette in the background as the particles flow into the character's body.";
 
                 for (let i = 1; i <= sceneCount; i++) {
                     let startT = (i - 1) * durationPerScene;
@@ -509,11 +569,11 @@
                     
                     if (mode === 'guardian') {
                         if (sceneCount === 1) {
-                            stageDesc = `Full sequence (${startT.toFixed(1)}s-${endT.toFixed(1)}s): Companion entity from (${addName}) dissolves into magical crystal particles. The glowing animal energy particles wrap around the character, infusing their essence into the armor being built from the boots up. OPACITY LOCK: Armor must form 100% solid instantly, NO ghosting.`;
+                            stageDesc = `Full sequence (${startT.toFixed(1)}s-${endT.toFixed(1)}s): Companion entity from (${addName}) ${dissolveText} The glowing animal energy particles wrap around the character, infusing their essence into the armor being built from the boots up.${wingText} OPACITY LOCK: Armor must form 100% solid instantly, NO ghosting.`;
                         } else {
-                            if (i === 1) stageDesc = `Scene 1 (${startT.toFixed(1)}s-${endT.toFixed(1)}s): Companion dissolves into glowing particle energy. Boots and shin armor form solid instantly.`;
-                            else if (i === 2) stageDesc = `Scene 2 (${startT.toFixed(1)}s-${endT.toFixed(1)}s): Energy infuses into thighs, armor spreads with companion's thematic aura. OPACITY LOCK: 100% solid, NO ghosting.`;
-                            else stageDesc = `Scene 3 (${startT.toFixed(1)}s-${endT.toFixed(1)}s): Final assembly. Upper body and helmet seal with companion particle integration.`;
+                            if (i === 1) stageDesc = `Scene 1 (${startT.toFixed(1)}s-${endT.toFixed(1)}s): Companion ${dissolveText} Boots and shin armor form solid instantly.`;
+                            else if (i === 2) stageDesc = `Scene 2 (${startT.toFixed(1)}s-${endT.toFixed(1)}s): Energy infuses into thighs, armor spreads with companion's thematic aura.${addonWings ? ' Organic animal-scale patterns imprint onto the armor plates.' : ''} OPACITY LOCK: 100% solid, NO ghosting.`;
+                            else stageDesc = `Scene 3 (${startT.toFixed(1)}s-${endT.toFixed(1)}s): Final assembly. Upper body and helmet seal with companion particle integration.${addonWings ? ' A pair of massive mechanical steel wings unfurl majestically from the back.' : ''}`;
                         }
                     } else {
                         if (sceneCount === 1) {
