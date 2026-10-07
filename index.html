@@ -176,7 +176,7 @@
                         <option value="" disabled selected>-- PILIH PRESET TRANSFORMASI --</option>
                         <option value="exosuit">Exosuit Tactical Mech (Military Plating)</option>
                         <option value="mecha">Mecha Gundam / Heavy Assault Mech</option>
-                        <option value="ironman">Nano-Tech Merambat Cepat (Gaya Iron Man)</option>
+                        <option value="nanotech">Nano-Tech Merambat Cepat (Advanced Power Armor)</option>
                         <option value="national">National Pride Armor (Zirah Identitas Negara)</option>
                         <option value="symbiote">Bio-Organic / Alien Symbiote (Gaya Venom)</option>
                         <option value="celestial">Divine Celestial / Angelic Paladin</option>
@@ -197,15 +197,15 @@
                         <input type="text" id="countryName" placeholder="Ketik negara / budaya..." class="w-full p-3 rounded-xl glass-input text-yellow-300 border-yellow-500/50 focus:border-yellow-400 font-semibold" oninput="updateDynamicPrompt()">
                     </div>
 
-                    <!-- Input Khusus Iron Man Varian -->
-                    <div id="ironmanOptionsBox" class="hidden mb-3 relative z-50">
+                    <!-- Input Khusus Varian Nano-Tech -->
+                    <div id="nanotechOptionsBox" class="hidden mb-3 relative z-[60]">
                         <label class="block text-xs font-bold text-red-400 mb-1">Varian Zirah (Khusus Nano-Tech)</label>
-                        <select id="ironmanSuit" class="w-full p-3 rounded-xl glass-input text-red-300 border-red-500/50 focus:border-red-400 focus:ring-1 focus:ring-red-400 font-semibold text-sm cursor-pointer" onchange="updateDynamicPrompt()">
+                        <select id="nanotechSuit" class="w-full p-3 rounded-xl glass-input text-red-300 border-red-500/50 focus:border-red-400 focus:ring-1 focus:ring-red-400 font-semibold text-sm cursor-pointer" onchange="updateDynamicPrompt()">
                             <option value="Sleek vibrant red and silver metallic nano-tech armor with glowing red circular platform">Custom Video (Perak Merah Sleek & Platform Menyala)</option>
-                            <option value="Classic Red and Gold Mark 85 style armor">Mark 85 (Klasik Merah Emas)</option>
-                            <option value="Sleek Silver and Red Centurion style armor">Silver Centurion (Perak Merah Klasik)</option>
-                            <option value="Heavy militaristic Gunmetal Grey and Black armor with shoulder cannons">War Machine (Gunmetal & Hitam)</option>
-                            <option value="Massive, oversized, bulky Hulkbuster style heavy armor">Hulkbuster (Super Masif Bulky)</option>
+                            <option value="Classic Red and Gold advanced high-tech nano-armor">Alpha-Suit (Klasik Merah Emas)</option>
+                            <option value="Sleek Silver and Red mechanical heavy armor">Silver Vanguard (Perak Merah Klasik)</option>
+                            <option value="Heavy militaristic Gunmetal Grey and Black artillery armor with shoulder cannons">Heavy Artillery (Gunmetal & Hitam)</option>
+                            <option value="Colossal, hyper-massive, heavily plated oversized robotic juggernaut mech suit with extreme thickness, pneumatic industrial pistons, and heavy mechanical exoskeleton">Goliath Titan (Super Masif Bulky / Anti-Banned)</option>
                             <option value="Matte Black stealth armor with glowing blue neon accents">Stealth Suit (Hitam Matte Cahaya Biru)</option>
                             <option value="Dark Emerald and Gold metallic nano-tech armor with intricate dragon scale textures" class="text-green-400">Dragon Buster (Hijau Zamrud & Emas Bersisik)</option>
                             <option value="Toxic Matte Black stealth armor with glowing neon green accents and bio-luminescent lines" class="text-green-400">Toxic Stealth (Hitam Matte & Neon Hijau)</option>
@@ -296,9 +296,9 @@
                 desc: "Zirah robot raksasa (Gundam style) berukuran masif dengan senjata mekanik dan lampu core.",
                 prompt: "Cinematic 8k footage. Massive Mecha/Gundam style robotic transformation from the ground up. Giant mechanical boots lock on. Heavy steel robotic thigh armor assembles instantly covering ALL bare skin. FOOTWEAR OVERRIDE: Original shoes MUST instantly morph into giant robotic boots. Glowing energy core on the massive chest plate ignites. Robotic arms extend, heavy mechanical helmet locks over the head. Intricate gears and hydraulics visible."
             },
-            ironman: {
-                desc: "Nano-Tech Merambat Cepat dengan platform pijakan bercahaya merah.",
-                prompt: "Cinematic 8k footage, ultra-realistic VFX. A character standing on high-tech glowing circular floor platforms emitting red light. Sleek, aerodynamic Nano-tech red and silver metallic suit rapidly spreading from the boots upwards. FOOTWEAR OVERRIDE: Original shoes MUST instantly morph into sleek armored boots. Micro-hexagonal plating constructs an absolute full lower body armor encasing thighs completely. ZERO BARE SKIN. High-tech chest arc reactor forms, motorized tight faceplate slams shut sealing the face."
+            nanotech: {
+                desc: "Nano-Tech Merambat Cepat dengan platform pijakan bercahaya.",
+                prompt: "Cinematic 8k footage, ultra-realistic VFX. A character standing on high-tech glowing circular floor platforms emitting red light. Sleek, aerodynamic Nano-tech red and silver metallic suit rapidly spreading from the boots upwards. FOOTWEAR OVERRIDE: Original shoes MUST instantly morph into sleek armored boots. Micro-hexagonal plating constructs an absolute full lower body armor encasing thighs completely. ZERO BARE SKIN. High-tech chest energy core forms, motorized mechanical faceplate slams shut sealing the face."
             },
             national: {
                 desc: "Zirah kebanggaan negara dengan ornamen budaya, bendera, dan platform bercahaya.",
@@ -346,7 +346,7 @@
             const presetKey = document.getElementById('presetKombinasi').value;
             const descEl = document.getElementById('deskripsiSingkat');
             const countryBox = document.getElementById('countryInputBox');
-            const ironmanBox = document.getElementById('ironmanOptionsBox');
+            const nanotechBox = document.getElementById('nanotechOptionsBox');
             
             if (presetKey && presets[presetKey]) {
                 descEl.innerText = presets[presetKey].desc;
@@ -354,20 +354,20 @@
 
                 if (presetKey === 'national') {
                     countryBox.classList.remove('hidden');
-                    ironmanBox.classList.add('hidden');
-                } else if (presetKey === 'ironman') {
-                    ironmanBox.classList.remove('hidden');
+                    nanotechBox.classList.add('hidden');
+                } else if (presetKey === 'nanotech') {
+                    nanotechBox.classList.remove('hidden');
                     countryBox.classList.add('hidden');
                 } else {
                     countryBox.classList.add('hidden');
-                    ironmanBox.classList.add('hidden');
+                    nanotechBox.classList.add('hidden');
                 }
                 
                 updateDynamicPrompt();
             } else {
                 descEl.classList.add('hidden');
                 countryBox.classList.add('hidden');
-                ironmanBox.classList.add('hidden');
+                nanotechBox.classList.add('hidden');
                 document.getElementById('textArahan').value = "";
             }
         }
@@ -386,8 +386,8 @@
                     }
                 }
 
-                if (presetKey === 'ironman') {
-                    const suitSelect = document.getElementById('ironmanSuit');
+                if (presetKey === 'nanotech') {
+                    const suitSelect = document.getElementById('nanotechSuit');
                     if (suitSelect) {
                         const suitType = suitSelect.value;
                         const suitText = suitSelect.options[suitSelect.selectedIndex].text;
@@ -417,6 +417,7 @@
             const btn = document.getElementById('generateBtn');
             const title = document.getElementById('outputTitle');
             const gridContainer = document.getElementById('uploadGridContainer');
+            
             const boxPendamping = document.getElementById('boxPendamping');
             const guardianOptions = document.getElementById('guardianOptions');
 
