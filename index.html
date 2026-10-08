@@ -93,10 +93,158 @@
         #errorToast.show {
             transform: translateY(0);
         }
+
+        /* =========================================
+           AUTH OVERLAY (SISTEM TOKEN)
+           ========================================= */
+        #auth-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 5, 5, 0.95);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999999;
+            padding: 20px;
+        }
+        .auth-card {
+            background: #0f172a;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 20px;
+            padding: 40px 30px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 0 40px rgba(56, 189, 248, 0.15), inset 0 0 20px rgba(56, 189, 248, 0.05);
+        }
+        .auth-card h2 {
+            color: #38bdf8;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 26px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 900;
+        }
+        .auth-card p {
+            color: #94a3b8;
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+        
+        /* Modifikasi untuk Hide/Unhide Token */
+        .token-input-wrapper {
+            position: relative;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        .auth-card input {
+            width: 100%;
+            padding: 16px;
+            padding-right: 50px; /* Ruang buat icon mata */
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: #38bdf8;
+            border-radius: 12px;
+            font-size: 18px;
+            text-align: center;
+            letter-spacing: 3px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            font-family: monospace;
+        }
+        .auth-card input:focus {
+            outline: none;
+            border-color: #38bdf8;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+            background: rgba(15, 23, 42, 1);
+        }
+        .toggle-btn {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+            width: auto !important;
+            color: #64748b;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .toggle-btn:hover {
+            color: #38bdf8;
+            box-shadow: none !important;
+            transform: translateY(-50%) scale(1.1) !important;
+        }
+
+        .auth-card .btn-verify {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #0284c7, #0ea5e9);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 2px;
+        }
+        .auth-card .btn-verify:hover {
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.5);
+            transform: translateY(-2px);
+        }
+        #authErrorToast {
+            color: #ef4444;
+            font-size: 13px;
+            margin-top: 15px;
+            font-weight: bold;
+            display: none;
+            animation: shake 0.4s;
+        }
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
     </style>
 </head>
 <body class="min-h-screen p-4 md:p-6 lg:p-8">
 
+    <!-- =========================================
+         LAYAR LOGIN / AUTH OVERLAY
+         ========================================= -->
+    <div id="auth-overlay">
+        <div class="auth-card">
+            <img src="https://i.imgur.com/ZmCmrVm.png" alt="Marskey Logo" class="h-20 mx-auto mb-6 drop-shadow-[0_0_20px_rgba(56,189,248,0.7)]" onerror="this.src='https://placehold.co/80x80/0f172a/38bdf8?text=M'">
+            <h2>MARSKEY GATE</h2>
+            <p>Akses Sistem Terkunci. Masukkan Token Unik.</p>
+            
+            <div class="token-input-wrapper">
+                <!-- Diubah menjadi type="password" sebagai default -->
+                <input type="password" id="tokenInput" placeholder="MK-XXXXXX" autocomplete="off" />
+                
+                <!-- Tombol Mata (Hide/Unhide) -->
+                <button type="button" class="toggle-btn" onclick="toggleTokenVisibility()">
+                    <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <!-- Default: Eye Closed Icon -->
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+                    </svg>
+                </button>
+            </div>
+
+            <button class="btn-verify" onclick="checkAccess()">VERIFIKASI</button>
+            <div id="authErrorToast">Token tidak valid atau sudah diblokir!</div>
+        </div>
+    </div>
+
+    <!-- MAIN APP BERMULA DI SINI -->
     <div id="errorToast" class="fixed top-5 left-1/2 -translate-x-1/2 bg-red-600/90 text-white px-6 py-4 rounded-xl shadow-[0_0_20px_rgba(220,38,38,0.5)] font-bold flex items-center gap-3 backdrop-blur-md z-[100]">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
         <span id="errorMsg">Harap pilih Preset Konsep & Gaya terlebih dahulu!</span>
@@ -119,7 +267,6 @@
         
         <div class="md:col-span-5 glass-panel rounded-2xl p-6 h-fit">
             
-            <!-- Mode Skenario -->
             <div class="mb-6">
                 <label class="block text-sm font-semibold text-cyan-400 mb-2">Mode Skenario</label>
                 <div class="grid grid-cols-2 gap-2">
@@ -134,7 +281,6 @@
                 </div>
             </div>
 
-            <!-- Upload Grid Dinamis -->
             <div id="uploadGridContainer" class="grid grid-cols-2 gap-4 mb-6 transition-all duration-300">
                 <!-- Subjek Utama -->
                 <div class="relative aspect-square rounded-xl glass-input overflow-hidden group cursor-pointer flex flex-col items-center justify-center text-center p-2 border-dashed border-2 hover:border-cyan-400 transition-colors">
@@ -146,7 +292,7 @@
                     </div>
                 </div>
 
-                <!-- Subjek Pendamping (Hanya Guardian) -->
+                <!-- Subjek Pendamping -->
                 <div id="boxPendamping" style="display: none;" class="relative aspect-square rounded-xl glass-input overflow-hidden group cursor-pointer flex flex-col items-center justify-center text-center p-2 border-dashed border-2 hover:border-purple-400 transition-colors">
                     <input type="file" id="uploadTambahan" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" onchange="previewImage(this, 'previewTambahan', 'textTambahanBox')">
                     <img id="previewTambahan" class="absolute inset-0 w-full h-full object-cover opacity-0 z-10 transition-opacity duration-300">
@@ -167,9 +313,27 @@
                 </div>
             </div>
 
+            <div class="mb-6 p-4 rounded-xl glass-input border border-cyan-500/30">
+                <label class="block text-sm font-semibold text-yellow-400 mb-2 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                    Panel Integrasi Senjata / Gear Tambahan
+                </label>
+                <div class="space-y-3">
+                    <select id="presetSenjata" class="w-full p-3 rounded-xl glass-input text-yellow-300 cursor-pointer font-semibold text-xs" onchange="selectWeaponPreset()">
+                        <option value="" disabled selected>-- PILIH ATAU KETIK SENJATA --</option>
+                        <option value="Dual plasma energy pistols mounted on hands">Dual Plasma Energy Pistols</option>
+                        <option value="Glowing futuristic energy katana blade">Glowing Futuristic Energy Katana</option>
+                        <option value="Heavy shoulder-mounted rocket launcher pods">Heavy Shoulder Rocket Launchers</option>
+                        <option value="Tactical assault rifle AK-47 sci-fi custom edition">Sci-Fi Tactical Assault Rifle</option>
+                        <option value="Massive energy plasma minigun on right arm">Plasma Minigun Arm Cannon</option>
+                        <option value="Vibranium dual energy shields on forearms">Vibranium Forearm Energy Shields</option>
+                        <option value="custom">-- Ketik Senjata Kustom Sendiri --</option>
+                    </select>
+                    <input type="text" id="customWeaponInput" placeholder="Atau ketik senjata kustom (misal: dual laser swords)..." class="w-full p-3 rounded-xl glass-input text-yellow-200 placeholder-yellow-600 text-xs font-semibold" oninput="updateDynamicPrompt()">
+                </div>
+            </div>
+
             <div class="space-y-5">
-                
-                <!-- GABUNGAN TEMA & GAYA -->
                 <div>
                     <label class="block text-sm font-semibold text-cyan-400 mb-2">Pilih Preset Konsep & Gaya</label>
                     <select id="presetKombinasi" class="w-full p-3 rounded-xl glass-input text-gray-200 cursor-pointer appearance-none font-semibold mb-2" onchange="updatePresetData()">
@@ -191,7 +355,7 @@
                     
                     <p id="deskripsiSingkat" class="text-[11px] text-cyan-200/70 italic leading-relaxed mb-3 hidden"></p>
 
-                    <!-- Input Khusus Negara (Hanya muncul jika National Pride dipilih) -->
+                    <!-- Input Khusus Negara -->
                     <div id="countryInputBox" class="hidden mb-3 relative z-40">
                         <label class="block text-xs font-bold text-yellow-400 mb-1">Nama Negara & Ornamen (Contoh: Indonesia, Garuda, Batik)</label>
                         <input type="text" id="countryName" placeholder="Ketik negara / budaya..." class="w-full p-3 rounded-xl glass-input text-yellow-300 border-yellow-500/50 focus:border-yellow-400 font-semibold" oninput="updateDynamicPrompt()">
@@ -201,7 +365,8 @@
                     <div id="nanotechOptionsBox" class="hidden mb-3 relative z-[60]">
                         <label class="block text-xs font-bold text-red-400 mb-1">Varian Zirah (Khusus Nano-Tech)</label>
                         <select id="nanotechSuit" class="w-full p-3 rounded-xl glass-input text-red-300 border-red-500/50 focus:border-red-400 focus:ring-1 focus:ring-red-400 font-semibold text-sm cursor-pointer" onchange="updateDynamicPrompt()">
-                            <option value="Sleek vibrant red and silver metallic nano-tech armor with glowing red circular platform">Custom Video (Perak Merah Sleek & Platform Menyala)</option>
+                            <option value="Sleek vibrant red and silver metallic nano-tech armor with segmented locking">Custom Video (Perak Merah Sleek & Platform Terpisah)</option>
+                            <option value="Sleek vibrant blue and cobalt metallic nano-tech armor with segmented locking" class="text-blue-400">Blue Cobalt (Perak Biru Sleek & Platform Terpisah)</option>
                             <option value="Classic Red and Gold advanced high-tech nano-armor">Alpha-Suit (Klasik Merah Emas)</option>
                             <option value="Sleek Silver and Red mechanical heavy armor">Silver Vanguard (Perak Merah Klasik)</option>
                             <option value="Heavy militaristic Gunmetal Grey and Black artillery armor with shoulder cannons">Heavy Artillery (Gunmetal & Hitam)</option>
@@ -216,8 +381,7 @@
                 </div>
             </div>
 
-            <!-- Opsi Tambahan Khusus Guardian -->
-            <div id="guardianOptions" class="hidden mb-6 bg-purple-900/20 border border-purple-500/30 p-4 rounded-xl transition-all duration-300 relative z-30">
+            <div id="guardianOptions" class="hidden mb-6 bg-purple-900/20 border border-purple-500/30 p-4 rounded-xl transition-all duration-300 relative z-30 mt-4">
                 <label class="flex items-center gap-3 cursor-pointer group">
                     <div class="relative">
                         <input type="checkbox" id="addonWings" class="peer sr-only">
@@ -230,9 +394,18 @@
                 </label>
             </div>
 
-            <div class="space-y-5">
+            <div class="space-y-5 mt-4">
                 
-                <!-- GABUNGAN TEMA & GAYA -->
+                <div>
+                    <label class="block text-sm font-semibold text-green-400 mb-2">Kecepatan Animasi (Pacing)</label>
+                    <select id="pacingSpeed" class="w-full p-3 rounded-xl glass-input text-gray-200 cursor-pointer appearance-none border-green-500/50 focus:border-green-400 focus:ring-1 focus:ring-green-400">
+                        <option value="Segmented" selected>Classy Segmented (Perakitan Presisi ala Video Referensi!)</option>
+                        <option value="Slow">Slow Motion & Merambat Perlahan (Dramatis)</option>
+                        <option value="Epic">Epic Pacing (Lama di kaki, merakit cepat di helm)</option>
+                        <option value="Standard">Standar (Otomatis dari AI)</option>
+                    </select>
+                </div>
+
                 <div>
                     <label class="block text-sm font-semibold text-cyan-400 mb-2">Rasio Video</label>
                     <div class="grid grid-cols-4 gap-2">
@@ -255,7 +428,6 @@
                     </div>
                 </div>
 
-                <!-- Durasi & Scene -->
                 <div>
                     <label class="block text-sm font-semibold text-cyan-400 mb-2">Durasi & Scene Split</label>
                     <select id="durasi" class="w-full p-3 rounded-xl glass-input text-gray-200 cursor-pointer appearance-none">
@@ -270,39 +442,126 @@
                 </div>
 
                 <button id="generateBtn" onclick="generatePrompt()" class="w-full btn-glow text-white font-bold py-4 px-6 rounded-xl shadow-lg transition duration-300 font-display tracking-widest text-lg mt-4">
-                    JADIKAN KARYAMU
+                    1. JADIKAN KARYAMU (Teks)
+                </button>
+
+                <button id="renderGeminiBtn" onclick="renderPreviewGemini()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-4 px-6 rounded-xl shadow-[0_0_15px_rgba(139,92,246,0.5)] transition duration-300 font-display tracking-widest text-lg mt-3 flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
+                    2. RENDER VISUAL (GEMINI AI)
                 </button>
             </div>
         </div>
 
         <div class="md:col-span-7 glass-panel rounded-2xl p-6 relative flex flex-col">
-            <h2 id="outputTitle" class="text-xl font-display font-bold text-cyan-400 mb-4 border-b border-cyan-500/20 pb-2">Unified Master Script</h2>
+            <h2 id="outputTitle" class="text-xl font-display font-bold text-cyan-400 mb-4 border-b border-cyan-500/20 pb-2">Unified Master Script & Visual</h2>
+            
+            <div id="geminiPreviewContainer" class="hidden mb-6 bg-black/50 border border-purple-500/30 rounded-xl p-4 flex flex-col items-center">
+                <h3 class="text-purple-300 font-display font-bold mb-3 text-sm flex items-center gap-2">
+                    <span class="animate-pulse h-2 w-2 bg-purple-500 rounded-full"></span> 
+                    Visual Concept Rendered by Gemini 3.1 Flash
+                </h3>
+                <div id="geminiLoading" class="hidden flex-col items-center justify-center py-10">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mb-3"></div>
+                    <p class="text-purple-400/80 text-sm font-mono animate-pulse">Memanggil Gemini Flash AI... Anti-Tony Stark Active...</p>
+                </div>
+                <div class="relative group mt-2 w-full flex justify-center">
+                    <img id="geminiResultImage" class="hidden max-h-[500px] object-contain rounded-lg shadow-[0_0_20px_rgba(139,92,246,0.3)]">
+                    
+                    <button id="downloadImgBtn" onclick="downloadGeminiImage()" class="hidden absolute bottom-2 right-2 md:bottom-4 md:right-4 bg-purple-600 hover:bg-purple-500 text-white p-3 rounded-full shadow-[0_0_15px_rgba(139,92,246,0.6)] transition-all transform hover:scale-110 z-10 border border-purple-400" title="Download Gambar (JPG/PNG)">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
             <div id="outputContainer" class="flex-grow overflow-y-auto space-y-4 pb-4">
                 <div class="h-full flex items-center justify-center text-gray-600 flex-col gap-3 opacity-50 min-h-[350px]">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" /></svg>
-                    <p class="font-display tracking-wider">PROMPT AKAN MUNCUL DI SINI</p>
+                    <p class="font-display tracking-wider">PROMPT & VISUAL AKAN MUNCUL DI SINI</p>
                 </div>
             </div>
         </div>
     </main>
 
     <script>
+        // ==========================================
+        // SISTEM KEAMANAN: MULTI-TOKEN & HIDE/UNHIDE
+        // ==========================================
+        const VALID_TOKENS = [
+            "MK-VIP",
+            "MK-4K8V1M",
+            "MK-9B2N5X",
+            "MK-3L6P8R",
+            "MK-8W1C4Z",
+            "MK-5T9Y2J",
+            "MK-2Q7E3U",
+            "MK-6V4H9F",
+            "MK-1M8S5D",
+            "MK-0P3K7L",
+            "MK-0P3K7L"
+        ];
+
+        // FUNGSI MATA (HIDE / UNHIDE)
+        function toggleTokenVisibility() {
+            const input = document.getElementById('tokenInput');
+            const eyeIcon = document.getElementById('eyeIcon');
+            
+            if (input.type === "password") {
+                input.type = "text";
+                // SVG Mata Terbuka
+                eyeIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                `;
+            } else {
+                input.type = "password";
+                // SVG Mata Tertutup
+                eyeIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+                `;
+            }
+        }
+
+        function checkAccess() {
+            const input = document.getElementById('tokenInput').value.trim().toUpperCase();
+            const err = document.getElementById('authErrorToast');
+
+            if (VALID_TOKENS.includes(input)) {
+                localStorage.setItem('marskey_secure_token', input);
+                document.getElementById('auth-overlay').style.display = 'none';
+            } else {
+                err.style.display = 'block';
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const activeToken = localStorage.getItem('marskey_secure_token');
+            if (activeToken && VALID_TOKENS.includes(activeToken)) {
+                document.getElementById('auth-overlay').style.display = 'none';
+            } else {
+                localStorage.removeItem('marskey_secure_token');
+                document.getElementById('auth-overlay').style.display = 'flex'; 
+            }
+        });
+        // ==========================================
+
         const presets = {
             exosuit: {
                 desc: "Konsep perakitan militer taktis dengan plat baja berat, piston hidrolik, dan helm tempur.",
                 prompt: "Cinematic 8k footage, ultra-realistic VFX. Strict bottom-to-top mechanical assembly sequence. Heavy metallic greaves violently lock onto shins, pneumatic pistons and steel plating construct upwards, completely encasing thighs with ABSOLUTE FULL COVERAGE (OBLITERATE ALL BARE SKIN, zero shorts visible, zero skin visible). FOOTWEAR OVERRIDE: Original shoes MUST instantly morph into heavy armored boots. Tactical chest cuirass snaps shut, heavy shoulder guards lock, arms lock in sequence, and a heavily armored tactical helmet seals the face perfectly."
             },
             mecha: {
-                desc: "Zirah robot raksasa (Gundam style) berukuran masif dengan senjata mekanik dan lampu core.",
-                prompt: "Cinematic 8k footage. Massive Mecha/Gundam style robotic transformation from the ground up. Giant mechanical boots lock on. Heavy steel robotic thigh armor assembles instantly covering ALL bare skin. FOOTWEAR OVERRIDE: Original shoes MUST instantly morph into giant robotic boots. Glowing energy core on the massive chest plate ignites. Robotic arms extend, heavy mechanical helmet locks over the head. Intricate gears and hydraulics visible."
+                desc: "Zirah robot raksasa (Gundam style) berukuran masif dengan sabuk energi.",
+                prompt: "Cinematic 8k footage. Massive Mecha/Gundam style robotic transformation from the ground up. Giant mechanical boots lock on. Heavy steel robotic thigh armor assembles instantly covering ALL bare skin. FOOTWEAR OVERRIDE: Original shoes MUST instantly morph into giant robotic boots. Glowing energy core ignites on the waist belt. Robotic arms extend, heavy mechanical helmet locks over the head. Intricate gears and hydraulics visible."
             },
             nanotech: {
-                desc: "Nano-Tech Merambat Cepat dengan platform pijakan bercahaya.",
-                prompt: "Cinematic 8k footage, ultra-realistic VFX. A character standing on high-tech glowing circular floor platforms emitting red light. Sleek, aerodynamic Nano-tech red and silver metallic suit rapidly spreading from the boots upwards. FOOTWEAR OVERRIDE: Original shoes MUST instantly morph into sleek armored boots. Micro-hexagonal plating constructs an absolute full lower body armor encasing thighs completely. ZERO BARE SKIN. High-tech chest energy core forms, motorized mechanical faceplate slams shut sealing the face."
+                desc: "Nano-Tech Merambat Cepat dari DUA platform pijakan terpisah.",
+                prompt: "Cinematic 8k footage, ultra-realistic VFX. A character standing firmly with EACH FOOT on TWO separate high-tech glowing circular floor platforms emitting red light. Sleek, aerodynamic Nano-tech red and silver metallic suit assembles through precision segmented mechanical locking. FOOTWEAR OVERRIDE: Original shoes MUST instantly morph into sleek armored boots. Micro-hexagonal plating constructs piece-by-piece, forming an absolute full lower body armor encasing thighs completely. ZERO BARE SKIN. High-tech energy buckle forms and ignites on the WAIST BELT. Motorized aerodynamic helmet seamlessly constructs into a smooth sentai-style full visor."
             },
             national: {
-                desc: "Zirah kebanggaan negara dengan ornamen budaya, bendera, dan platform bercahaya.",
-                prompt: "Cinematic 8k footage, ultra-realistic VFX. A character standing on glowing technological floor platforms. Epic bottom-to-top mechanical assembly of a majestic National Pride cultural armor. FOOTWEAR OVERRIDE: Original shoes MUST instantly morph into heavy ornate armored boots. Ornate metallic greaves lock onto shins with cultural engravings, golden armor plating and battle skirts assemble over thighs covering all skin. A detailed chestplate featuring majestic national symbols and crests snaps into place. Fully sealed ceremonial helmet with a crest locks over the face."
+                desc: "Zirah kebanggaan negara dengan ornamen budaya, bendera, dan sabuk energi.",
+                prompt: "Cinematic 8k footage, ultra-realistic VFX. A character standing on glowing technological floor platforms. Epic bottom-to-top mechanical assembly of a majestic National Pride cultural armor. FOOTWEAR OVERRIDE: Original shoes MUST instantly morph into heavy ornate armored boots. Ornate metallic greaves lock onto shins with cultural engravings, golden armor plating and battle skirts assemble over thighs covering all skin. A detailed chestplate featuring majestic national symbols snaps into place. Fully sealed ceremonial helmet with a crest locks over the face."
             },
             symbiote: {
                 desc: "Alien bio-organik (ala Venom) di mana cairan hitam merayap menutupi tubuh.",
@@ -342,6 +601,18 @@
             }
         };
 
+        function selectWeaponPreset() {
+            const select = document.getElementById('presetSenjata');
+            const customInput = document.getElementById('customWeaponInput');
+            if (select.value === 'custom') {
+                customInput.value = '';
+                customInput.focus();
+            } else {
+                customInput.value = select.value;
+            }
+            updateDynamicPrompt();
+        }
+
         function updatePresetData() {
             const presetKey = document.getElementById('presetKombinasi').value;
             const descEl = document.getElementById('deskripsiSingkat');
@@ -379,6 +650,11 @@
             if (presetKey && presets[presetKey]) {
                 let basePrompt = presets[presetKey].prompt;
 
+                const weaponVal = document.getElementById('customWeaponInput').value.trim();
+                if (weaponVal) {
+                    basePrompt += `\n\n[HEAVY WEAPON & GEAR INTEGRATION: The character materializes and wields/mounts heavy tactical gear: [${weaponVal}], perfectly integrated into the robotic plating.]`;
+                }
+
                 if (presetKey === 'national') {
                     const countryVal = document.getElementById('countryName').value.trim();
                     if (countryVal) {
@@ -392,19 +668,23 @@
                         const suitType = suitSelect.value;
                         const suitText = suitSelect.options[suitSelect.selectedIndex].text;
                         
-                        // Otomatis ubah aura & dasar warna jika pilih varian hijau/toxic
-                        if (suitText.includes("Hijau") || suitText.includes("Neon Hijau")) {
-                            basePrompt = basePrompt.replace("glowing circular floor platforms emitting red light", "glowing circular floor platforms emitting toxic emerald-green light");
+                        if (suitText.includes("Blue Cobalt") || suitText.includes("Perak Biru")) {
+                            basePrompt = basePrompt.replace("emitting red light", "emitting intense blue light");
+                            basePrompt = basePrompt.replace("red and silver metallic suit", "sleek blue and cobalt metallic suit");
+                            basePrompt = basePrompt.replace("buckle forms and ignites", "buckle forms and emits a powerful blue neon glow");
+                        } else if (suitType === 'Sleek vibrant red and silver metallic nano-tech armor with segmented locking') {
+                            basePrompt = basePrompt.replace("buckle forms and ignites", "buckle forms and emits a powerful red neon glow");
+                        } else if (suitText.includes("Hijau") || suitText.includes("Neon Hijau")) {
+                            basePrompt = basePrompt.replace("emitting red light", "emitting toxic emerald-green light");
                             basePrompt = basePrompt.replace("red and silver metallic suit", "dark green and black metallic suit");
+                            basePrompt = basePrompt.replace("buckle forms and ignites", "buckle forms and emits a toxic green neon glow");
                         }
                         
-                        basePrompt += `\n\n[SPECIFIC ARMOR OVERRIDE: The armor formed MUST strictly be ${suitType}. Maintain the rapid nano-tech assembly sequence.]`;
+                        basePrompt += `\n\n[SPECIFIC ARMOR OVERRIDE: The armor formed MUST strictly be ${suitType}. Maintain the segmented precision assembly sequence.]`;
                     }
                 }
 
                 textArea.value = basePrompt;
-                
-                // Efek visual kedip supaya tahu teksnya udah terupdate otomatis
                 textArea.classList.add('border-cyan-400', 'bg-cyan-900/30', 'shadow-[0_0_15px_rgba(34,211,238,0.4)]');
                 setTimeout(() => {
                     textArea.classList.remove('border-cyan-400', 'bg-cyan-900/30', 'shadow-[0_0_15px_rgba(34,211,238,0.4)]');
@@ -425,7 +705,6 @@
                 btn.style.background = "linear-gradient(90deg, #7c3aed, #a855f7)";
                 title.className = "text-xl font-display font-bold text-purple-400 mb-4 border-b border-purple-500/20 pb-2";
                 title.innerText = "Guardian Particle-Fusion Script";
-                
                 if(boxPendamping) boxPendamping.style.display = "flex";
                 if(guardianOptions) guardianOptions.classList.remove('hidden');
                 if(gridContainer) {
@@ -435,8 +714,7 @@
             } else {
                 btn.style.background = "linear-gradient(90deg, #0284c7, #0ea5e9)";
                 title.className = "text-xl font-display font-bold text-cyan-400 mb-4 border-b border-cyan-500/20 pb-2";
-                title.innerText = "Unified Master Script";
-                
+                title.innerText = "Unified Master Script & Visual";
                 if(boxPendamping) boxPendamping.style.display = "none";
                 if(guardianOptions) guardianOptions.classList.add('hidden');
                 if(gridContainer) {
@@ -483,17 +761,24 @@
             });
             
             document.getElementById('presetKombinasi').value = "";
+            document.getElementById('presetSenjata').selectedIndex = 0;
+            document.getElementById('customWeaponInput').value = "";
             updatePresetData();
 
             document.getElementById('durasi').selectedIndex = 1;
+            document.getElementById('pacingSpeed').selectedIndex = 0;
             document.querySelector('input[name="rasio"][value="9:16"]').checked = true;
             document.querySelector('input[name="modeSkenario"][value="standar"]').checked = true;
             toggleMode();
             
+            document.getElementById('geminiPreviewContainer').classList.add('hidden');
+            const downloadBtn = document.getElementById('downloadImgBtn');
+            if(downloadBtn) downloadBtn.classList.add('hidden');
+            
             document.getElementById('outputContainer').innerHTML = `
                 <div class="h-full flex items-center justify-center text-gray-600 flex-col gap-3 opacity-50 min-h-[350px]">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" /></svg>
-                    <p class="font-display tracking-wider">PROMPT AKAN MUNCUL DI SINI</p>
+                    <p class="font-display tracking-wider">PROMPT & VISUAL AKAN MUNCUL DI SINI</p>
                 </div>
             `;
         }
@@ -507,7 +792,6 @@
             toast.className = "fixed bottom-5 right-5 bg-cyan-500/90 text-white px-6 py-3 rounded-xl shadow-lg font-semibold transform transition-all duration-300 translate-y-0 opacity-100 flex items-center gap-2 backdrop-blur-sm z-50";
             toast.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Script Berhasil Disalin!`;
             document.body.appendChild(toast);
-            
             setTimeout(() => {
                 toast.classList.add("translate-y-10", "opacity-0");
                 setTimeout(() => toast.remove(), 300);
@@ -521,6 +805,113 @@
             anchor.download = filename + ".txt";
             anchor.href = window.URL.createObjectURL(blob);
             anchor.click();
+        }
+
+        function downloadGeminiImage() {
+            const img = document.getElementById('geminiResultImage');
+            if (!img.src || img.src === window.location.href) return;
+            
+            let ext = "png";
+            if (img.src.includes("image/jpeg") || img.src.includes("image/jpg")) ext = "jpg";
+            
+            fetch(img.src)
+                .then(res => res.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const anchor = document.createElement("a");
+                    anchor.href = url;
+                    anchor.download = "Marskey_Visual_Render." + ext;
+                    document.body.appendChild(anchor);
+                    anchor.click();
+                    document.body.removeChild(anchor);
+                    window.URL.revokeObjectURL(url);
+                });
+        }
+
+        async function renderPreviewGemini() {
+            const charImg = document.getElementById('previewKarakter');
+            const bgImg = document.getElementById('previewBackground');
+            const promptText = document.getElementById('textArahan').value;
+
+            if (!charImg.src || charImg.src === window.location.href || charImg.classList.contains('opacity-0') || !charImg.src.startsWith('data:')) {
+                showError("Harap upload gambar Subjek Utama terlebih dahulu untuk merender visual!");
+                return;
+            }
+            if (!promptText) {
+                showError("Harap pilih preset dan hasilkan script dulu sebelum render!");
+                return;
+            }
+
+            const container = document.getElementById('geminiPreviewContainer');
+            const loading = document.getElementById('geminiLoading');
+            const resultImg = document.getElementById('geminiResultImage');
+            const btn = document.getElementById('renderGeminiBtn');
+            const downloadBtn = document.getElementById('downloadImgBtn');
+
+            container.classList.remove('hidden');
+            loading.classList.remove('hidden');
+            loading.classList.add('flex');
+            resultImg.classList.add('hidden');
+            if(downloadBtn) downloadBtn.classList.add('hidden');
+            
+            btn.disabled = true;
+            btn.innerHTML = `<div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div> MENGHUBUNGI GEMINI...`;
+
+            try {
+                let base64Data = charImg.src.split(',')[1];
+                let mimeType = charImg.src.split(';')[0].split(':')[1];
+
+                let promptParts = [
+                    { text: `Transform this character by applying this futuristic armor design: ${promptText}. 
+                    CRITICAL FACE LOCK: You MUST freeze and keep the EXACT same original face identity, bone structure, and beard/mustache as the provided person. ZERO morphing into Robert Downey Jr, Tony Stark, or any other actor. DO NOT alter their ethnicity.
+                    ANTI-TONY STARK CHEST LOCK: The chest armor MUST BE a sleek, seamless chest plate matching the suit color. There must be ZERO glowing lights, ZERO circular glass cutouts, and ZERO arc reactors on the chest area. The ONLY light source is a glowing energy core prominently located on the WAIST BELT (Henshin buckle style). THIS GLOWING BELT MUST BE FULLY VISIBLE.` },
+                    { inlineData: { mimeType: mimeType, data: base64Data } }
+                ];
+
+                if (bgImg && bgImg.src && bgImg.src.startsWith('data:')) {
+                    let bgBase64 = bgImg.src.split(',')[1];
+                    let bgMime = bgImg.src.split(';')[0].split(':')[1];
+                    
+                    promptParts[0].text += " IMPORTANT ENVIRONMENT LOCK: Composite the transformed character into the EXACT background environment provided in the second image. DO NOT change the background environment into a sci-fi armory or lab.";
+                    promptParts.push({ inlineData: { mimeType: bgMime, data: bgBase64 } });
+                }
+
+                const payload = {
+                    contents: [{ role: "user", parts: promptParts }],
+                    generationConfig: { responseModalities: ['TEXT', 'IMAGE'] }
+                };
+
+                const apiKey = ""; 
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if(!response.ok) throw new Error("API call failed.");
+                const result = await response.json();
+                const part = result?.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
+
+                if (part && part.inlineData) {
+                    const imageUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+                    resultImg.src = imageUrl;
+                    resultImg.classList.remove('hidden');
+                    if(downloadBtn) downloadBtn.classList.remove('hidden');
+                } else {
+                    showError("Gagal merender gambar. Gemini mengembalikan respons kosong.");
+                }
+
+            } catch (error) {
+                console.error("Error rendering image:", error);
+                showError("Terjadi kesalahan jaringan/sistem saat memanggil Gemini API.");
+            } finally {
+                loading.classList.add('hidden');
+                loading.classList.remove('flex');
+                btn.disabled = false;
+                btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg> 2. RENDER VISUAL (GEMINI AI)`;
+            }
         }
 
         function generatePrompt() {
@@ -545,11 +936,11 @@
             setTimeout(() => {
                 const presetSelect = document.getElementById('presetKombinasi');
                 const presetJudul = presetSelect.options[presetSelect.selectedIndex].text;
-                
                 let userText = document.getElementById('textArahan').value;
                 
                 const ratio = document.querySelector('input[name="rasio"]:checked').value;
                 const durasiVal = document.getElementById('durasi').value;
+                const pacingVal = document.getElementById('pacingSpeed').value;
                 const mode = document.querySelector('input[name="modeSkenario"]:checked').value;
                 
                 const [sceneCount, totalSeconds] = durasiVal.split('|').map(Number);
@@ -559,8 +950,23 @@
                 let fullDownloadText = "";
                 
                 const addonWings = document.getElementById('addonWings') && document.getElementById('addonWings').checked;
-                let wingText = addonWings ? " Intricate organic animal-scale patterns and glowing bio-luminescent lines permanently imprint and etch onto the metallic armor plates. In the final stage as the helmet locks into place, a pair of massive, majestic mechanical steel wings with razor-sharp metallic feathers majestically unfurl and extend from the back, glowing with internal energy." : "";
-                let dissolveText = "gracefully dissolves into glowing energy particles and swirling bio-luminescent mist. The companion's body slowly transforms over several seconds, remaining visible as a fading ethereal energy silhouette in the background as the particles flow into the character's body.";
+                const customWeapon = document.getElementById('customWeaponInput').value.trim();
+                let dissolveText = "gracefully dissolves into glowing energy particles. The particles flow into the character's body.";
+
+                let strictEnforcementsText = `
+[STRICT ENFORCEMENTS]
+- FREEZE THE ORIGINAL FACE: The character's face MUST remain the EXACT same person from the first frame to the last frame. ZERO morphing into Robert Downey Jr, Tony Stark, or any other actor. DO NOT change their facial identity.
+- INITIAL ATTIRE LOCK: Character MUST begin wearing EXACTLY the same original clothing as the reference image.
+- ENVIRONMENT LOCK: The background room, furniture, and lighting MUST remain absolutely unchanged from the first frame to the last frame. DO NOT transform the room into a sci-fi armory or lab.
+- CLOTHING REPLACEMENT: As armor builds upward, it destroys and replaces original clothing. Old clothes MUST NOT clip through armor.
+- PROPORTION LOCK: Maintain exact body size, scale, and proportions from start to finish. NO shrinking, NO expanding, NO warping.
+- BODY INTEGRITY LOCK: BOTH ARMS and HANDS MUST remain fully visible, intact, and physically attached to the torso at ALL times. Do not render floating armor without the body inside it.
+- FOOTWEAR OVERRIDE: Original shoes/sneakers MUST instantly morph into style-appropriate heavy armored boots AT THE VERY BEGINNING. DO NOT leave the original shoes visible.
+- DYNAMIC POSTURE: The character's arms MUST move and flex dynamically during assembly. DO NOT let arms remain stiff and static.
+- ABSOLUTE FULL COVERAGE: OBLITERATE ALL BARE SKIN ON LEGS. SEAMLESS ARMOR PANTS ENCASE THIGHS COMPLETELY. ZERO SHORTS OR SKIN VISIBLE. ZERO THIGH GAPS.
+- NO FLYING PARTS: Armor pieces MUST NOT fly in from off-screen or float in the air. The armor MUST mechanically spread, extrude, or grow continuously directly from the body and existing armor.
+- ANTI-TONY STARK CHEST LOCK: The chest armor MUST BE a sleek, seamless chest plate matching the suit color. There must be ZERO glowing lights, ZERO circular glass cutouts, and ZERO arc reactors on the chest area. The ONLY light source is the WAIST BELT.
+- BELT PERSISTENCE LOCK: The main glowing energy source is a high-tech buckle strictly located on the WAIST/BELT (Henshin style). ONCE FORMED, THIS GLOWING WAIST CORE MUST REMAIN VISIBLE, ACTIVE, AND UNCOVERED AT ALL TIMES. DO NOT COVER THE BELT WITH UPPER ARMOR.`;
 
                 for (let i = 1; i <= sceneCount; i++) {
                     let startT = (i - 1) * durationPerScene;
@@ -568,75 +974,55 @@
                     let stageDesc = "";
                     let continuityNote = i > 1 ? `\n[CONTINUITY NOTE: Maintain exact ending visual state from Scene ${i-1} as the starting frame. Seamlessly continue the sequence.]` : "";
                     
+                    let seg = durationPerScene / 5;
+                    let t0 = startT;
+                    let t1 = startT + seg;
+                    let t2 = startT + (seg * 2);
+                    let t3 = startT + (seg * 3);
+                    let t4 = startT + (seg * 4);
+                    let t5 = endT;
+
+                    let weaponTimeline = customWeapon ? " and weapon materializes firmly in hand" : "";
+                    let wingsTimeline = (addonWings && mode === 'guardian') ? " Massive mechanical steel wings unfurl majestically." : "";
+
+                    let timelinePacing = `
+[STRICT SECOND-BY-SECOND TIMELINE]
+- ${t0.toFixed(1)}s to ${t1.toFixed(1)}s: FOOTWEAR FIRST. Original shoes instantly transform into heavy armored boots. Armor mechanically extrudes upwards strictly on the feet and calves. NO FLYING PIECES.
+- ${t1.toFixed(1)}s to ${t2.toFixed(1)}s: Heavy plating seamlessly extrudes to encase the knees, thighs, and hips. A prominent glowing energy buckle mechanically locks onto the WAIST/BELT.
+- ${t2.toFixed(1)}s to ${t3.toFixed(1)}s: A sleek, seamless chest plate matching the suit color securely constructs itself over the torso. NO LIGHTS ON CHEST. THE GLOWING WAIST BELT REMAINS CLEARLY VISIBLE AND IS NOT COVERED. ARMS MUST REMAIN WEARING ORIGINAL CLOTHING DURING THIS PHASE.
+- ${t3.toFixed(1)}s to ${t4.toFixed(1)}s: ARMOR WRAPS THE PHYSICAL ARMS. Armor seamlessly extrudes from the shoulders, aggressively spreading downwards along both of the character's existing physical arms (biceps, forearms), finally forming heavy gauntlets over the physical hands and fingers. NO FLYING ARM PARTS.
+- ${t4.toFixed(1)}s to ${t5.toFixed(1)}s: The helmet seamlessly constructs over the head${weaponTimeline}.${wingsTimeline}`;
+
                     if (mode === 'guardian') {
-                        if (sceneCount === 1) {
-                            stageDesc = `Full sequence (${startT.toFixed(1)}s-${endT.toFixed(1)}s): Companion entity from (${addName}) ${dissolveText} The glowing animal energy particles wrap around the character, infusing their essence into the armor being built from the boots up.${wingText} OPACITY LOCK: Armor must form 100% solid instantly, NO ghosting.`;
-                        } else {
-                            if (i === 1) stageDesc = `Scene 1 (${startT.toFixed(1)}s-${endT.toFixed(1)}s): Companion ${dissolveText} Boots and shin armor form solid instantly.`;
-                            else if (i === 2) stageDesc = `Scene 2 (${startT.toFixed(1)}s-${endT.toFixed(1)}s): Energy infuses into thighs, armor spreads with companion's thematic aura.${addonWings ? ' Organic animal-scale patterns imprint onto the armor plates.' : ''} OPACITY LOCK: 100% solid, NO ghosting.`;
-                            else stageDesc = `Scene 3 (${startT.toFixed(1)}s-${endT.toFixed(1)}s): Final assembly. Upper body and helmet seal with companion particle integration.${addonWings ? ' A pair of massive mechanical steel wings unfurl majestically from the back.' : ''}`;
-                        }
+                        stageDesc = `Full sequence (${startT.toFixed(1)}s-${endT.toFixed(1)}s): Companion entity from (${addName}) ${dissolveText}`;
                     } else {
-                        if (sceneCount === 1) {
-                            stageDesc = `Full sequence (${startT.toFixed(1)}s-${endT.toFixed(1)}s): Strict bottom-to-top assembly. OPACITY LOCK: Armor must form 100% solid and attached instantly, NO flying plates, NO ghosting. Helmet seals in the final second.`;
-                        } else if (sceneCount === 2) {
-                            if (i === 1) stageDesc = `First half (${startT.toFixed(1)}s-${endT.toFixed(1)}s): Boots and thigh armor assembly. OPACITY LOCK: 100% solid, NO ghosting.`;
-                            else stageDesc = `Second half (${startT.toFixed(1)}s-${endT.toFixed(1)}s): Upper body and helmet locking securely over head.`;
-                        } else {
-                            if (i === 1) stageDesc = `Scene 1 (${startT.toFixed(1)}s-${endT.toFixed(1)}s): Ground activation, armored boots lock onto shins.`;
-                            else if (i === 2) stageDesc = `Scene 2 (${startT.toFixed(1)}s-${endT.toFixed(1)}s): Solid plating encases thighs. OPACITY LOCK: 100% solid, NO ghosting.`;
-                            else stageDesc = `Scene 3 (${startT.toFixed(1)}s-${endT.toFixed(1)}s): Torso assembly and helmet sealing.`;
-                        }
+                        stageDesc = `Full sequence (${startT.toFixed(1)}s-${endT.toFixed(1)}s): Strict bottom-to-top assembly locking perfectly to the timeline below.`;
                     }
 
-                    let unifiedText = mode === 'guardian' ? `==================================================
-GUARDIAN PARTICLE-FUSION SCRIPT - SCENE ${i} (${startT.toFixed(1)}s - ${endT.toFixed(1)}s)
+                    let styleFeel = "";
+                    if (pacingVal === "Segmented") styleFeel = "- Stylistic feel: Classy Segmented. Heavy, precise, piece-by-piece mechanical extruding locking from two separate floor platforms. You can almost feel the weight and hear the snap of the armor parts.";
+                    else if (pacingVal === "Slow") styleFeel = "- Stylistic feel: Slow Motion cinematic rendering.";
+                    else if (pacingVal === "Epic") styleFeel = "- Stylistic feel: Epic cinematic ramping.";
+
+                    let unifiedText = `==================================================
+${mode === 'guardian' ? 'GUARDIAN PARTICLE-FUSION' : 'UNIFIED MASTER'} SCRIPT - SCENE ${i} (${startT.toFixed(1)}s - ${endT.toFixed(1)}s)
 ==================================================
-Ref: ${charName}, ${addName}, ${bgName}
+Ref: ${charName}${mode === 'guardian' ? `, ${addName}` : ''}, ${bgName}
 Style: ${presetJudul}
 Ratio: ${ratio}
-Mode: GUARDIAN PARTICLE-FUSION${continuityNote}
+Mode: ${mode === 'guardian' ? 'GUARDIAN PARTICLE-FUSION' : 'STANDARD MULTI-SCENE'}
+${continuityNote}
 
 [ACTION & MECHANICS]
 ${userText}
 ${stageDesc}
+${styleFeel}
+${timelinePacing}
 
-[STRICT ENFORCEMENTS]
-- FOOTWEAR OVERRIDE: Original shoes/sneakers MUST instantly morph into style-appropriate heavy armored boots.
-- DYNAMIC POSTURE: The character's arms MUST move and flex dynamically during assembly. DO NOT let arms remain stiff and static at the sides.
-[STRICT RULES]
-- Strict Bottom-to-Top assembly.
-- OPACITY LOCK: 100% solid and opaque armor plates. ZERO ghosting, ZERO semi-transparent flying plates.
-- ABSOLUTE FULL COVERAGE: OBLITERATE ALL BARE SKIN ON LEGS. SEAMLESS ARMOR PANTS ENCASE THIGHS COMPLETELY. ZERO SHORTS OR SKIN VISIBLE. ZERO THIGH GAPS.
-- CONTINUITY LOCK: ONCE ARMORED, STAY ARMORED. The lower body armor MUST NOT disappear or revert back to the original shorts/bare legs when the upper body is assembling.
-- ZERO LOOSE HAIR VISIBLE: All hair must be magically tucked inside the sealing helmet.
+${strictEnforcementsText}
 
 [NEGATIVE PROMPT]
-transparent armor, ghosting, opacity fade, semi-transparent plates, flying unattached armor, clothes reappearing, shorts reappearing, bare legs, exposed skin on thighs, gaps in armor, shoes staying normal, original footwear unchanged, sneaker, white shoes, casual footwear, companion surviving intact, low quality, cartoon, watermark, logo, changing facial identity, loose hair visible, stiff static arms.
-==================================================` : `==================================================
-UNIFIED MASTER SCRIPT - SCENE ${i} (${startT.toFixed(1)}s - ${endT.toFixed(1)}s)
-==================================================
-Ref: ${charName}, ${bgName}
-Style: ${presetJudul}
-Ratio: ${ratio}
-Mode: STANDARD MULTI-SCENE${continuityNote}
-
-[ACTION & MECHANICS]
-${userText}
-${stageDesc}
-
-[STRICT ENFORCEMENTS]
-- FOOTWEAR OVERRIDE: Original shoes/sneakers MUST instantly morph into style-appropriate heavy armored boots.
-- DYNAMIC POSTURE: The character's arms MUST move and flex dynamically during assembly. DO NOT let arms remain stiff and static at the sides.
-[STRICT RULES]
-- Strict Bottom-to-Top assembly.
-- OPACITY LOCK: 100% solid and opaque armor plates. ZERO ghosting, ZERO semi-transparent flying plates.
-- ABSOLUTE FULL COVERAGE: OBLITERATE ALL BARE SKIN ON LEGS. SEAMLESS ARMOR PANTS ENCASE THIGHS COMPLETELY. ZERO SHORTS OR SKIN VISIBLE. ZERO THIGH GAPS.
-- CONTINUITY LOCK: ONCE ARMORED, STAY ARMORED. The lower body armor MUST NOT disappear or revert back to the original shorts/bare legs when the upper body is assembling.
-- ZERO LOOSE HAIR VISIBLE: All hair must be magically tucked inside the sealing helmet.
-
-[NEGATIVE PROMPT]
-transparent armor, ghosting, opacity fade, semi-transparent plates, flying unattached armor, clothes reappearing, shorts reappearing, bare legs, exposed skin on thighs, gaps in armor, shoes staying normal, original footwear unchanged, sneaker, white shoes, casual footwear, instant armor appearance, incorrect anatomy, low quality, cartoon, watermark, logo, changing facial identity, loose hair visible, stiff static arms.
+flying armor pieces, parts flying through the air, telekinetic assembly, exposed shoes, regular shoes, original footwear unchanged, sneaker, casual footwear, Robert Downey Jr, Tony Stark, celebrity face, MCU actor, Iron Man face morph, changing facial identity, changing ethnicity, glowing chest, chest light, arc reactor, changing background, morphing room, transforming environment, transparent armor, ghosting, opacity fade, semi-transparent plates, flying unattached armor, clothes reappearing, shorts reappearing, bare legs, exposed skin on thighs, gaps in armor, instant armor appearance, incorrect anatomy, low quality, cartoon, watermark, logo, loose hair visible, stiff static arms, shrinking, body warping, changing proportions, headless, missing head, floating helmet, flying helmet, detached parts, weapon disappearing, missing arms, missing hands, floating limbs, amputee, invisible arms.
 ==================================================`;
 
                     fullDownloadText += unifiedText + "\n\n";
@@ -649,7 +1035,7 @@ transparent armor, ghosting, opacity fade, semi-transparent plates, flying unatt
                                 </h3>
                                 <button onclick="copyToClipboard('unifiedScriptText_${i}')" class="text-xs ${mode === 'guardian' ? 'bg-purple-600 hover:bg-purple-500' : 'bg-cyan-600 hover:bg-cyan-500'} text-white font-semibold px-4 py-2 rounded-lg transition-colors shadow-lg">Copy Script</button>
                             </div>
-                            <textarea id="unifiedScriptText_${i}" class="w-full bg-black/40 border ${mode === 'guardian' ? 'border-purple-500/20' : 'border-cyan-500/20'} text-green-400 text-sm h-[320px] p-4 rounded-xl font-mono focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all shadow-inner resize-y">${unifiedText}</textarea>
+                            <textarea id="unifiedScriptText_${i}" class="w-full bg-black/40 border ${mode === 'guardian' ? 'border-purple-500/20' : 'border-cyan-500/20'} text-green-400 text-sm h-[520px] p-4 rounded-xl font-mono focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all shadow-inner resize-y">${unifiedText}</textarea>
                         </div>
                     `;
                 }
@@ -662,7 +1048,7 @@ transparent armor, ghosting, opacity fade, semi-transparent plates, flying unatt
                 </div>`;
 
                 document.getElementById('outputContainer').innerHTML = containerHtml;
-                btn.innerHTML = "JADIKAN KARYAMU";
+                btn.innerHTML = "1. JADIKAN KARYAMU (Teks)";
                 btn.classList.remove('opacity-70', 'cursor-not-allowed');
             }, 800);
         }
